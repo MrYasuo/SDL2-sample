@@ -33,7 +33,7 @@ INCLUDEDIRS		:= $(INCLUDE)
 LIBDIRS			:= $(LIB)
 # cannot use del command on Makefile
 # must use by cmd
-RM				:= cmd //C rmdir //Q //S
+RM				:= rm -f
 MD				:= mkdir
 else
 MAIN			:= main
@@ -90,7 +90,7 @@ $(MAIN): $(OBJECTS)
 # execute whenever a file 'clean' is exist or not
 .PHONY: clean
 clean:
-	$(shell rm $(SRC)/*.o)
+	$(RM) $(SRC)/*.o
 	$(RM) $(MAIN)
 	@echo Cleanup complete!
 
