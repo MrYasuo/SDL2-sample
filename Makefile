@@ -29,7 +29,7 @@ LIB				:= lib
 ifeq ($(OS),Windows_NT)
 MAIN			:= main.exe
 SOURCEDIRS		:= $(SRC)
-INCLUDEDIRS		:= $(INCLUDE)
+INCLUDEDIRS		:= $(INCLUDE)/SDL2
 LIBDIRS			:= $(LIB)
 # cannot use del command on Makefile
 # must use by cmd
