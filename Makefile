@@ -12,7 +12,7 @@ CXXFLAGS		:= -std=c++17 -Wall -Wextra -flto -g
 # define library paths in addition to /usr/lib
 #   if I wanted to include libraries not in /usr/lib I'd specify
 #   their path using -Lpath, something like:
-LFLAGS			:= -lmingw32 -lSDL2main -lSDL2
+LFLAGS			:= -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 
 # define output directory
 OUTPUT			:= output
@@ -21,7 +21,7 @@ OUTPUT			:= output
 SRC				:= src
 
 # define include directory
-INCLUDE			:= include
+INCLUDE			:= include include/SDL2
 
 # define lib directory
 LIB				:= lib
@@ -29,7 +29,7 @@ LIB				:= lib
 ifeq ($(OS),Windows_NT)
 MAIN			:= main.exe
 SOURCEDIRS		:= $(SRC)
-INCLUDEDIRS		:= $(INCLUDE)/SDL2
+INCLUDEDIRS		:= $(INCLUDE)
 LIBDIRS			:= $(LIB)
 # cannot use del command on Makefile
 # must use by cmd
@@ -97,3 +97,5 @@ clean:
 run: all
 	./$(MAIN)
 	@echo Executing 'run: all' complete!
+
+re: clean all run

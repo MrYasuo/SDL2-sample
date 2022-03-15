@@ -4,7 +4,8 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/include/SDL2"
+                "${workspaceFolder}/include/SDL2",
+                "${workspaceFolder}/include"
             ],
             "defines": [
                 "_DEBUG",
@@ -13,7 +14,7 @@
             ],
             "compilerPath": "C:/MinGW/bin/gcc.exe",
             "cStandard": "gnu17",
-            "cppStandard": "gnu++14",
+            "cppStandard": "gnu++17",
             "intelliSenseMode": "${default}"
         }
     ],
