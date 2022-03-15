@@ -1,10 +1,11 @@
 #include <iostream>
 #include <random>
+#include <time.h>
 
 int diff;
 
 std::minstd_rand random_engine() {
-	std::minstd_rand eng{std::random_device{}()};
+	std::minstd_rand eng{time(0)};
 	return eng;
 }
 
