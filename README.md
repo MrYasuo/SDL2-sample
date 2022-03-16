@@ -1,5 +1,5 @@
 # Guess It
-Run file exe to play game, or type the following command
+Run file __main.exe__ to play game, or type the following command
 ```
 make
 make run
