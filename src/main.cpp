@@ -37,7 +37,7 @@ void kill();
 void game();
 void playAgain();
 void reDraw(std::string);
-void renderText(const char* text, int x, int y, SDL_Color color, bool isCentered = false);
+void renderText(const char* text, int x, int y, SDL_Color color, bool isCentered = false, TTF_Font*& font = gFont);
 
 int main(int argc, char** argv) {
 	init();
@@ -111,6 +111,7 @@ void menu() {
 	// Copy a PORTION of the texture to the current rendering target
 	// Notice that if the third parameter is NULL, the entire texture will be copied to the position of the destination localtion (desRect)
 	SDL_RenderCopy(gRenderer, gTexture, NULL, &desRect);
+	renderText("Guess It", SCREEN_WIDTH, SCREEN_HEIGHT / 5 * 2, {255, 255, 255, 255}, true, bFont);
 	// Update the screen
 	start = Button(gRenderer, gSurface, gTexture, bFont, SCREEN_WIDTH / 4, SCREEN_HEIGHT / 2, 100, 100, 0, 0, 0, "Start");
 	quit = Button(gRenderer, gSurface, gTexture, bFont, SCREEN_WIDTH / 4 * 3 - 100, SCREEN_HEIGHT / 2, 100, 100, 0, 0, 0, "Quit");
@@ -124,40 +125,60 @@ bool loop() {
 			case SDL_QUIT:
 				return false;
 			case SDL_KEYDOWN: {
-				if (e.key.keysym.sym == SDLK_0 || e.key.keysym.sym == SDLK_1 || e.key.keysym.sym == SDLK_2 || e.key.keysym.sym == SDLK_3 || e.key.keysym.sym == SDLK_4 || e.key.keysym.sym == SDLK_5 || e.key.keysym.sym == SDLK_6 || e.key.keysym.sym == SDLK_7 || e.key.keysym.sym == SDLK_8 || e.key.keysym.sym == SDLK_9) {
-					if (input.length() > 3) {
-						input = " ";
-						reDraw("Don't type more than 3 characters");
-					} else {
-						reDraw(" ");
-						input += e.key.keysym.sym;
-						renderText(input.c_str(), (SCREEN_WIDTH - 40) / 2, SCREEN_HEIGHT / 2 + 30, {0, 0, 0, 255});
-					}
-				} else {
-					if (e.key.keysym.sym == SDLK_BACKSPACE && input.length() > 0) {
-						input.pop_back();
-						reDraw(" ");
-					} else if (e.key.keysym.sym == SDLK_RETURN) {
-						if (compare(input, random)) {
-							reDraw(" ");
-							renderText("You win!", SCREEN_WIDTH, SCREEN_HEIGHT / 3, {0, 255, 0, 255}, true);
-							playAgain();
-							return true;
-						} else {
-							reDraw(returnDiff().c_str());
-							return true;
+				if (!prompt) {
+					switch (e.key.keysym.sym) {
+						case SDLK_0:
+						case SDLK_1:
+						case SDLK_2:
+						case SDLK_3:
+						case SDLK_4:
+						case SDLK_5:
+						case SDLK_6:
+						case SDLK_7:
+						case SDLK_8:
+						case SDLK_9: {
+							if (input.length() > 3) {
+								input = " ";
+								reDraw("Don't type more than 3 characters");
+							} else {
+								reDraw(" ");
+								input += e.key.keysym.sym;
+								renderText(input.c_str(), (SCREEN_WIDTH - 40) / 2, SCREEN_HEIGHT / 2 + 30, {0, 0, 0, 255});
+							}
+							break;
 						}
-					} else {
-						if (e.key.keysym.sym == SDLK_q && prompt) {
-							return false;
-						} else if (prompt) {
-							game();
-						} else {
+						case SDLK_BACKSPACE: {
+							if (input.length() > 1) {
+								input.pop_back();
+								reDraw(" ");
+							}
+							break;
+						}
+						case SDLK_RETURN: {
+							if (compare(input, random)) {
+								reDraw(" ");
+								renderText("You win!", SCREEN_WIDTH, SCREEN_HEIGHT / 3, {0, 255, 0, 255}, true);
+								playAgain();
+								return true;
+							} else {
+								if (input.length() > 1) {
+									reDraw(returnDiff().c_str());
+									return true;
+								}
+							}
+							break;
+						}
+						default: {
 							reDraw("Please type only numbers");
 						}
 					}
+					break;
+				} else {
+					if (e.key.keysym.sym == SDLK_q)
+						return false;
+					else
+						game();
 				}
-				break;
 			}
 			case SDL_MOUSEBUTTONDOWN: {
 				if (e.button.button == SDL_BUTTON_LEFT) {
@@ -180,8 +201,8 @@ bool loop() {
 	return true;
 }
 
-void renderText(const char* text, int x, int y, SDL_Color color, bool isCentered) {
-	gSurface = TTF_RenderText_Blended(gFont, text, color);
+void renderText(const char* text, int x, int y, SDL_Color color, bool isCentered, TTF_Font*& font) {
+	gSurface = TTF_RenderText_Blended(font, text, color);
 	gTexture = SDL_CreateTextureFromSurface(gRenderer, gSurface);
 	SDL_FreeSurface(gSurface);
 	if (isCentered) {
@@ -198,6 +219,7 @@ void renderText(const char* text, int x, int y, SDL_Color color, bool isCentered
 
 void game() {
 	random = getRandomNumber();
+	prompt = false;
 	// std::cout << random << std::endl;
 	input = " ";
 	reDraw(" ");

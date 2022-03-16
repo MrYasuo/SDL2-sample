@@ -4,8 +4,10 @@
 
 int diff;
 
-std::minstd_rand random_engine() {
-	std::minstd_rand eng{time(0)};
+// return reference to the minstd_rand class
+// so that we use static
+std::minstd_rand& random_engine() {
+	static std::minstd_rand eng{time(0)};
 	return eng;
 }
 
@@ -27,4 +29,5 @@ std::string returnDiff() {
 	if (diff > 0) {
 		return "The number is too big";
 	}
+	return " ";
 }
